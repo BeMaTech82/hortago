@@ -1,0 +1,185 @@
+{
+    "name": "Mon App PWA - Application Progressive Web",
+    "short_name": "MonAppPWA",
+    "description": "Une application web progressive moderne, rapide et installable sur tous vos appareils",
+    "lang": "fr",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "theme_color": "#2563eb",
+    "background_color": "#ffffff",
+    "icons": [
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "64x64",
+            "type": "image/png"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "favicon"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Vue d'ensemble de l'application sur desktop"
+        },
+        {
+            "src": "/la-generation-didees.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Interface mobile optimisée"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Accueil",
+            "short_name": "Home",
+            "description": "Aller directement à la page d'accueil",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "/icons/shortcut-home.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Nouveau",
+            "short_name": "New",
+            "description": "Créer un nouvel élément",
+            "url": "/new",
+            "icons": [
+                {
+                    "src": "/icons/shortcut-new.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Paramètres",
+            "short_name": "Settings",
+            "description": "Accéder aux paramètres de l'application",
+            "url": "/settings",
+            "icons": [
+                {
+                    "src": "/icons/shortcut-settings.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ],
+    "categories": [
+        "productivity",
+        "utilities",
+        "business"
+    ],
+    "edge_side_panel": {
+        "preferred_width": 400
+    },
+    "launch_handler": {
+        "client_mode": "focus-existing"
+    },
+    "protocol_handlers": [
+        {
+            "protocol": "web+myapp",
+            "url": "/handle?protocol=%s"
+        }
+    ],
+    "share_target": {
+        "action": "/share",
+        "method": "POST",
+        "enctype": "multipart/form-data",
+        "params": {
+            "title": "title",
+            "text": "text",
+            "url": "url",
+            "files": [
+                {
+                    "name": "files",
+                    "accept": [
+                        "image/*",
+                        ".pdf",
+                        ".txt"
+                    ]
+                }
+            ]
+        }
+    },
+    "file_handlers": [
+        {
+            "action": "/open-file",
+            "accept": {
+                "text/plain": [
+                    ".txt"
+                ],
+                "application/json": [
+                    ".json"
+                ],
+                "image/*": [
+                    ".png",
+                    ".jpg",
+                    ".jpeg",
+                    ".gif",
+                    ".webp"
+                ]
+            }
+        }
+    ],
+    "related_applications": [
+        {
+            "platform": "play",
+            "url": "https://play.google.com/store/apps/details?id=com.monapp.pwa",
+            "id": "com.monapp.pwa"
+        },
+        {
+            "platform": "webapp",
+            "url": "https://monapp.com/pwa"
+        }
+    ],
+    "prefer_related_applications": false,
+    "id": "/",
+    "iarc_rating_id": "",
+    "note_taking": {
+        "new_note_url": "/new-note"
+    }
+}

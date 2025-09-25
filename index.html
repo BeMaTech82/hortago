@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#10b981" />
+    <meta name="description" content="Marketplace local pour producteurs et acheteurs" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/la-generation-didees.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>Marché Local - PWA</title>
+</head>
+
+<body>
+    <div class="header-actions">
+        <button id="test-notifications-btn"
+            style="background: #f59e0b; color: white; border: none; padding: 0.5rem; border-radius: 0.25rem; margin-right: 0.5rem;">Test
+            Notifs</button>
+        <span id="status" class="status">En ligne</span>
+        <button id="install-btn" class="install-btn hidden">📱 Installer</button>
+    </div>
+    <div id="app">
+        <!-- Header avec navigation -->
+        <header class="header">
+            <h1>🌾 Marché Local</h1>
+            <div class="header-actions">
+                <span id="status" class="status">En ligne</span>
+                <button id="install-btn" class="install-btn hidden">📱 Installer</button>
+            </div>
+        </header>
+
+        <!-- Navigation principale -->
+        <nav class="main-nav">
+            <button data-view="home" class="nav-btn active">🏠 Accueil</button>
+            <button data-view="products" class="nav-btn">🛒 Produits</button>
+            <button data-view="seller" class="nav-btn">🌱 Vendre</button>
+            <button data-view="buyer" class="nav-btn">🔍 Acheter</button>
+        </nav>
+
+        <!-- VUE CONFIGURATION UTILISATEUR -->
+        <div id="setup-view" class="view">
+            <div class="card">
+                <h2>🚀 Configuration initiale</h2>
+                <p>Configurons votre profil pour commencer à utiliser le marché local</p>
+
+                <form id="user-setup-form">
+                    <div class="form-group">
+                        <label for="name">Nom/Pseudo</label>
+                        <input type="text" id="name" name="name" required placeholder="Votre nom">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Je suis :</label>
+                        <select id="type" name="type" required>
+                            <option value="">Choisissez...</option>
+                            <option value="vendeur">Producteur/Vendeur</option>
+                            <option value="acheteur">Acheteur</option>
+                            <option value="both">Les deux</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn primary">Commencer</button>
+                </form>
+
+                <div class="info-box">
+                    <p><strong>📍 Localisation :</strong> Nous utiliserons votre position pour vous connecter avec des
+                        producteurs/acheteurs proches de chez vous.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VUE ACCUEIL -->
+        <div id="home-view" class="view hidden">
+            <div class="welcome-section">
+                <div class="card featured">
+                    <h2>Bienvenue sur votre marché local ! 🌾</h2>
+                    <p>Connectez producteurs et acheteurs dans votre région</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3 id="products-count">0</h3>
+                            <p>Produits disponibles</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="sellers-count">0</h3>
+                            <p>Producteurs actifs</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="categories-count">11</h3>
+                            <p>Catégories</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="card">
+                        <h3>Actions rapides</h3>
+                        <div class="action-buttons">
+                            <button data-view="products" class="btn secondary">🛒 Voir les produits</button>
+                            <button data-view="seller" class="btn primary">🌱 Ajouter un produit</button>
+                            <button data-view="buyer" class="btn secondary">🔔 Créer une alerte</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VUE PRODUITS -->
+        <div id="products-view" class="view hidden">
+            <div class="products-header">
+                <h2>🛒 Produits disponibles</h2>
+
+                <div class="filters">
+                    <input type="text" id="search-input" placeholder="Rechercher un produit..." class="search-input">
+
+                    <select id="category-filter" class="category-filter">
+                        <option value="all">Toutes catégories</option>
+                        <option value="Fruits">Fruits</option>
+                        <option value="Légumes">Légumes</option>
+                        <option value="Céréales">Céréales</option>
+                        <option value="Légumineuses">Légumineuses</option>
+                        <option value="Herbes aromatiques">Herbes aromatiques</option>
+                        <option value="Fleurs">Fleurs</option>
+                        <option value="Œufs">Œufs</option>
+                        <option value="Produits laitiers">Produits laitiers</option>
+                        <option value="Miel">Miel</option>
+                        <option value="Conserves">Conserves</option>
+                        <option value="Autres">Autres</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="products-list" class="products-grid">
+                <!-- Produits chargés dynamiquement -->
+            </div>
+        </div>
+
+        <!-- VUE VENDEUR -->
+        <div id="seller-view" class="view hidden">
+            <div class="seller-section">
+                <h2>🌱 Espace Producteur</h2>
+
+                <!-- Formulaire ajout produit -->
+                <div class="card">
+                    <h3>Ajouter un nouveau produit</h3>
+
+                    <form id="seller-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="product-name">Nom du produit</label>
+                                <input type="text" id="product-name" name="name" required
+                                    placeholder="ex: Tomates cerises">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="product-category">Catégorie</label>
+                                <select id="product-category" name="category" required>
+                                    <option value="">Choisir...</option>
+                                    <option value="Fruits">Fruits</option>
+                                    <option value="Légumes">Légumes</option>
+                                    <option value="Céréales">Céréales</option>
+                                    <option value="Légumineuses">Légumineuses</option>
+                                    <option value="Herbes aromatiques">Herbes aromatiques</option>
+                                    <option value="Fleurs">Fleurs</option>
+                                    <option value="Œufs">Œufs</option>
+                                    <option value="Produits laitiers">Produits laitiers</option>
+                                    <option value="Miel">Miel</option>
+                                    <option value="Conserves">Conserves</option>
+                                    <option value="Autres">Autres</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="product-description">Description</label>
+                            <textarea id="product-description" name="description" rows="3"
+                                placeholder="Décrivez votre produit, méthode de culture, etc."></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="product-quantity">Quantité</label>
+                                <input type="number" id="product-quantity" name="quantity" required min="1"
+                                    placeholder="10">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="product-unit">Unité</label>
+                                <select id="product-unit" name="unit" required>
+                                    <option value="kg">Kilogrammes</option>
+                                    <option value="g">Grammes</option>
+                                    <option value="pièces">Pièces</option>
+                                    <option value="litres">Litres</option>
+                                    <option value="bouquets">Bouquets</option>
+                                    <option value="paniers">Paniers</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="product-price">Prix (€)</label>
+                                <input type="number" id="product-price" name="price" required min="0" step="0.1"
+                                    placeholder="5.50">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="harvest-date">Date de récolte prévue</label>
+                            <input type="date" id="harvest-date" name="harvestDate" required>
+                        </div>
+
+                        <button type="submit" class="btn primary">📢 Publier et notifier</button>
+                    </form>
+                </div>
+
+                <!-- Mes produits -->
+                <div class="card">
+                    <h3>Mes produits</h3>
+                    <div id="my-products-list">
+                        <!-- Produits du vendeur chargés dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VUE ACHETEUR -->
+        <div id="buyer-view" class="view hidden">
+            <div class="buyer-section">
+                <h2>🔍 Espace Acheteur</h2>
+
+                <!-- Formulaire alerte -->
+                <div class="card">
+                    <h3>Créer une alerte de recherche</h3>
+                    <p>Recevez des notifications quand de nouveaux produits correspondent à vos critères</p>
+
+                    <form id="buyer-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="search-category">Catégorie recherchée</label>
+                                <select id="search-category" name="category" required>
+                                    <option value="all">Toutes catégories</option>
+                                    <option value="Fruits">Fruits</option>
+                                    <option value="Légumes">Légumes</option>
+                                    <option value="Céréales">Céréales</option>
+                                    <option value="Légumineuses">Légumineuses</option>
+                                    <option value="Herbes aromatiques">Herbes aromatiques</option>
+                                    <option value="Fleurs">Fleurs</option>
+                                    <option value="Œufs">Œufs</option>
+                                    <option value="Produits laitiers">Produits laitiers</option>
+                                    <option value="Miel">Miel</option>
+                                    <option value="Conserves">Conserves</option>
+                                    <option value="Autres">Autres</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="search-radius">Rayon de recherche (km)</label>
+                                <select id="search-radius" name="radius" required>
+                                    <option value="5">5 km</option>
+                                    <option value="10" selected>10 km</option>
+                                    <option value="20">20 km</option>
+                                    <option value="50">50 km</option>
+                                    <option value="100">100 km</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="search-keywords">Mots-clés (optionnel)</label>
+                            <input type="text" id="search-keywords" name="keywords" placeholder="bio, local, frais...">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="max-price">Prix maximum (€, optionnel)</label>
+                            <input type="number" id="max-price" name="maxPrice" min="0" step="0.1" placeholder="10.00">
+                        </div>
+
+                        <button type="submit" class="btn primary">🔔 Créer l'alerte</button>
+                    </form>
+                </div>
+
+                <!-- Mes alertes -->
+                <div class="card">
+                    <h3>Mes alertes actives</h3>
+                    <div id="my-searches-list">
+                        <!-- Alertes de l'acheteur chargées dynamiquement -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>🌱 <strong>Marché Local</strong> - Connecter producteurs et consommateurs</p>
+                <p>Application hors ligne - Données stockées localement</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Styles CSS intégrés -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background: #f9fafb;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .install-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+        }
+
+        /* Navigation */
+        .main-nav {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: fit-content;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #10b981;
+            color: white;
+        }
+
+        /* Layout */
+        .view {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.featured {
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+            border: 2px solid #10b981;
+        }
+
+        .card h2,
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn.primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn.primary:hover {
+            background: #059669;
+        }
+
+        .btn.secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn.secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 0.5rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: #10b981;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Products */
+        .products-header {
+            margin-bottom: 2rem;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .category-filter {
+            min-width: 200px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .product-category {
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+        }
+
+        .product-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+        }
+
+        .product-details p {
+            margin-bottom: 0.5rem;
+        }
+
+        .product-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Search cards */
+        .search-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Info box */
+        .info-box {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .info-box p {
+            margin: 0;
+            color: #1e40af;
+        }
+
+        /* Empty states */
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: #f3f4f6;
+            padding: 2rem 1rem;
+            text-align: center;
+            margin-top: 2rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .footer-content p {
+            margin: 0.5rem 0;
+            color: #6b7280;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <script type="module" src="/main.js"></script>
+</body>
+
+
+</html>
