@@ -1,4 +1,4 @@
-import localforage from 'localforage';
+const localforage = window.localforage
 import './style.css';
 
 // Configuration du stockage
