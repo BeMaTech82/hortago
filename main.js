@@ -1,12 +1,16 @@
-import localforage from 'localforage'
-import './style.css'
+import localforage from 'localforage';
+import './style.css';
 
 // Configuration du stockage
-localforage.config({
-  driver: localforage.INDEXEDDB,
-  name: 'MarketplacePWA',
-  storeName: 'marketData'
-})
+const storage = {
+  async setItem(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  },
+  async getItem(key) {
+    const item = localStorage.getItem(key);
+    return item ? JSON.parse(item) : null;
+  }
+};
 
 // Gestionnaire de géolocalisation simple pour le rayon
 class LocationManager {
