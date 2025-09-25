@@ -10,6 +10,16 @@
     <link rel="apple-touch-icon" href="/la-generation-didees.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: https:;
+      connect-src 'self' https://ipapi.co https://api.openweathermap.org;
+      font-src 'self';
+      manifest-src 'self';
+      worker-src 'self';
+    ">
     <title>Marché Local - PWA</title>
 </head>
 
