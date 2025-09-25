@@ -1,9 +1,10 @@
 /* global self, clients */
 const VERSION = 'v1.0.1';
 const APP_SHELL = [
-  '/', '/index.html', '/offline.html',
-  '/styles.css', '/app.js', '/install.js',
-  '/manifest.json', '/images/placeholder.webp'
+  'index.html',
+  'manifest.webmanifest',
+  'styles.css',
+  'main.js'
 ];
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 const SHELL_CACHE = `shell-${VERSION}`;

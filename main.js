@@ -295,7 +295,7 @@ class MarketplacePWA {
   async setupPWA() {
     if ('serviceWorker' in navigator) {
       try {
-        await navigator.serviceWorker.register('/sw.js')
+        await navigator.serviceWorker.register('./sw.js', { scope: './' })
         console.log('Service Worker enregistré')
       } catch (error) {
         console.log('Erreur Service Worker:', error)
