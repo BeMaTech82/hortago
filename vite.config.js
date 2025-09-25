@@ -18,17 +18,39 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'icon-192.png',
+            src: 'la-generation-didees.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: 'icon-512.png',
+            src: 'la-generation-didees.png',
             sizes: '512x512',
             type: 'image/png'
           }
         ]
       }
     })
-  ]
+  ],
+  // Configuration pour éviter eval() en développement
+  build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
+  },
+  // Désactiver eval en développement
+  define: {
+    __DEV__: JSON.stringify(process.env.NODE_ENV !== 'production')
+  },
+  esbuild: {
+    drop: ['console', 'debugger']
+  }
 })
